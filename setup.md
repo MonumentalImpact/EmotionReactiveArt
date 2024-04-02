@@ -8,3 +8,8 @@
 #then you can install the packages we need
 !pip install deepface
 !pip install tf-keras
+!pip install thonny
+
+To test the installation, open 'dftest.py' in the 'test' folder using thonny.
+Run dftest.py.
+This will download a bunch of data when you run it the first time.
