@@ -16,6 +16,6 @@ cam.release()
 cv2.destroyAllWindows()
 
 objs = DeepFace.analyze(img_path = testpic, 
-    actions = ['age', 'gender', 'race', 'emotion']
+    actions = ['emotion']
 )
 print(f"analyze {testpic}:\n",objs)
