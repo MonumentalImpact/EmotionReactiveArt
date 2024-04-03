@@ -6,8 +6,11 @@
 !source era/bin/activate
 
 #then you can install the packages we need
+
 !pip install deepface
+
 !pip install tf-keras
+
 !pip install thonny
 
 To test the installation, open 'dftest.py' in the 'test' folder using thonny.
