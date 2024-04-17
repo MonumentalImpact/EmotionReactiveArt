@@ -21,3 +21,4 @@ objs = DeepFace.analyze(img_path = testpic,
 print(f"analyze {testpic}:\n",objs)
 print("dominant emotion is ", objs[0]['dominant_emotion'])
 
+ 
