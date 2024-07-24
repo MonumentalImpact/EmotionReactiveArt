@@ -10,19 +10,49 @@ from time import sleep
 CLIENT_NAME = 'mp1' #must be set to the name of the esp32 being used
 BROKER_ADDR = 'pi5ub.local'
 
+emotions = [ 'neutral', 'angry', 'disgust', 'fear', 'happy', 'sad', 'surprise'] 
+global emo 
+emo = emotions[0]
+
+
 # Received messages from subscriptions will be delivered to this callback
 def sub_cb(topic, msg):
+    global emo
     print((topic, msg))
+    if topic == b'art/emotion' :
+        emo = msg.decode('utf-8')
 
-def main(server="localhost"):
+def main():
+    global emo
     c = MQTTClient(CLIENT_NAME, BROKER_ADDR)
     c.set_callback(sub_cb)
     c.connect()
     c.subscribe(b'art/emotion')
+    
+    last_emo = emo
     i = 0
     while True:
         # Non-blocking wait for message
         c.check_msg()
+        
+        if emo != last_emo:
+              last_emo=emo
+          
+              if emo =='neutral':
+                    print(emo)
+              if emo =='angry':
+                    print(emo)
+              if emo =='disgust':
+                    print(emo)
+              if emo == 'fear':
+                     print(emo)
+              if emo == 'happy':
+                    print(emo)
+              if emo =='sad':
+                    print(emo)
+              if emo == 'surprise':
+                    print(emo)
+                
         # Then need to sleep to avoid 100% CPU usage (in a real
         # app other useful actions would be performed instead)
         sleep(1)
@@ -34,4 +64,4 @@ def main(server="localhost"):
 
 
 if __name__ == "__main__":
-    main(BROKER_ADDR)
+    main()

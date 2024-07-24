@@ -36,4 +36,5 @@ def wifi_connect(hostname=None, ssid='art-iot', key='artisfun'):
             
     print('network config:', wlan.ifconfig())
 
-wifi_connect()
+# wifi_connect()
+wifi_connect(hostname="mptest1",ssid='tsati',key='hutonetwo')
