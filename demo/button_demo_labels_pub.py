@@ -94,7 +94,7 @@ while True:
     
     if analyzed and emotion != last_emotion:
         client.publish("art/emotion", emotion)
-        client.publish("art/emotiondetail", objs[0])
+        client.publish("art/emotiondetail", str(objs[0]['emotion']))
         last_emotion = emotion
 
 
