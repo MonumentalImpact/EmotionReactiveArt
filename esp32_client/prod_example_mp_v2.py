@@ -18,9 +18,13 @@ emo = emotions[0]
 # Received messages from subscriptions will be delivered to this callback
 def sub_cb(topic, msg):
     global emo
+#     topic = topic.decode('utf-8')
+#     msg = msg.decode('utf-8')
     print((topic, msg))
     if topic == b'art/emotion' :
         emo = msg.decode('utf-8')
+    if topic == b'art/emotiondetail':
+        eds = msg.decode('utf-8')
 
 def main():
     global emo
@@ -57,7 +61,7 @@ def main():
         # app other useful actions would be performed instead)
         sleep(1)
         i+=1
-        if i > 30:
+        if i > 90:
             break
 
     c.disconnect()

@@ -26,6 +26,7 @@ def main(server="localhost"):
         c.check_msg()
         # Then need to sleep to avoid 100% CPU usage (in a real
         # app other useful actions would be performed instead)
+        print(".")
         sleep(1)
         i+=1
         if i > 30:
