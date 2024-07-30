@@ -1,5 +1,6 @@
 from umqtt.simple import MQTTClient
 from time import sleep
+import json
 
 # Publish test messages e.g. with:
 # mosquitto_pub -t foo_topic -m hello
@@ -13,7 +14,12 @@ BROKER_ADDR = 'pi5ub.local'
 # Received messages from subscriptions will be delivered to this callback
 def sub_cb(topic, msg):
     print((topic, msg))
-
+    if topic == b'art/emotion' :
+        print(f"emotion updated to {msg}")
+    if topic == b'art/emotiondetail':
+        edetail = json.loads(msg.decode('utf-8'))
+        print(f"edetail is {edetail}")
+        
 def main(server="localhost"):
     c = MQTTClient(CLIENT_NAME, BROKER_ADDR)
     c.set_callback(sub_cb)
@@ -29,7 +35,7 @@ def main(server="localhost"):
         print(".")
         sleep(1)
         i+=1
-        if i > 30:
+        if i > 120:
             break
 
     c.disconnect()
