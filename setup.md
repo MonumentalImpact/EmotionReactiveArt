@@ -30,3 +30,7 @@ Don't use this in production! This just makes it easier when in development.
 run the server with:
 
 !sudo mosquitto -c /etc/mosquitto/mosquitto.conf
+
+send test messages with
+!mosquitto_pub -t art/emotion -m test
+
