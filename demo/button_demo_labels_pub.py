@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from deepface import DeepFace
 import os
+import json
 
 # button=gp21
 # led=gp20
@@ -17,7 +18,8 @@ client =Client()
 if client.connect("pi5ub.local", 1883, 60) != 0:
     print("could not connect")
     sys.exit(1)
-
+else:
+    print("connected to broker")
 
 led = gpiozero.LED(20)
 led.off()
@@ -45,7 +47,8 @@ testpic = 'testusbimage.jpg'
 
 cam = cv2.VideoCapture(0)
 
-emotion = 'happy'
+emotion = 'none'
+emotiondetail = ''
 last_emotion = emotion
 status_msg = emotion
 emo_count = 7 #change cur_dir after emo_count changes in emotion
@@ -77,13 +80,15 @@ while True:
         objs = DeepFace.analyze(img_path = testpic, 
             actions = ['emotion']
         )
-        print(f"analyze {testpic}:\n",objs)
+#         print(f"analyze {testpic}:\n",objs)
         emotion = objs[0]['dominant_emotion']
-        print("dominant emotion is ", emotion)
+        emotiondetail = json.dumps(sorted(objs[0]['emotion'].items(),key=lambda k: (k[1],k[0]), reverse=True))
+        print("current dominant emotion is ", emotion)
+        print(f"emotion details: {emotiondetail}")
         emo_file = 'pics/' + cur_dir + '/' + emotion + '.jpg'
         cv2.imwrite( emo_file, cam_image)
         analyzed = True
-        status_msg = emotion
+        status_msg = emotion + " : " + emotiondetail
 
 
     except:
@@ -93,8 +98,10 @@ while True:
         pass
     
     if analyzed and emotion != last_emotion:
-        client.publish("art/emotion", emotion)
-        client.publish("art/emotiondetail", str(objs[0]['emotion']))
+        print(f"posting dominant emotion: {emotion}")
+        client.publish("art/emotion", emotion.encode('utf-8'))
+        print(f"posting emotiondetail: {emotiondetail}")
+        client.publish("art/emotiondetail", emotiondetail.encode('utf-8'))
         last_emotion = emotion
 
 
