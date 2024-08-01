@@ -47,7 +47,7 @@ testpic = 'testusbimage.jpg'
 
 cam = cv2.VideoCapture(0)
 
-emotion = 'none'
+emotion = 'neutral'
 emotiondetail = ''
 last_emotion = emotion
 status_msg = emotion
