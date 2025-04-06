@@ -4,30 +4,22 @@ from deepface import DeepFace
 # import os
 import json
 
+import whichsys
+sysname = whichsys.whichsys()
 # button=gp21
 # led=gp20
 
 # from time import sleep
-import gpiozero
 # from signal import pause
 from sys import exit
 
-from paho.mqtt.client import Client 
-client =Client()
-
-if client.connect("pi5ub.local", 1883, keepalive=3600) != 0:
-    print("could not connect")
-    exit(1)
-else:
-    print("connected to broker")
-
-led = gpiozero.LED(20)
-led.off()
-
-button = gpiozero.Button(21)
-
-button.when_pressed = led.on
-button.when_released = led.off
+if sysname == 'Linux':
+    import gpiozero
+    led = gpiozero.LED(20)
+    led.off()
+    button = gpiozero.Button(21)
+    button.when_pressed = led.on
+    button.when_released = led.off
 
 
 emotions = ["angry", "happy", "sad", "fear","neutral","disgust", "surprise"]
@@ -62,7 +54,7 @@ while True:
         cv2.imshow(win_title,image)
         cv2.displayOverlay(win_title, status_msg)
 
-        if button.is_pressed:
+        if sysname == 'Linux' and button.is_pressed:
             break
         k = cv2.waitKey(1)
         if k != -1:

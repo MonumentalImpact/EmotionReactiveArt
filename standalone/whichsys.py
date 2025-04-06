@@ -5,7 +5,6 @@ def whichsys():
     else:
         import platform
         return( platform.uname().system )
-    return('Unknown')        
         
 if __name__ == '__main__':
     print(f"system is {whichsys()}")
