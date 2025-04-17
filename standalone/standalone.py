@@ -4,8 +4,9 @@ from deepface import DeepFace
 # import os
 import json
 
-import whichsys
-sysname = whichsys.whichsys()
+import platform
+has_button = 'Arm' in platform.uname().machine
+
 # button=gp21
 # led=gp20
 
@@ -13,7 +14,7 @@ sysname = whichsys.whichsys()
 # from signal import pause
 from sys import exit
 
-if sysname == 'Linux':
+if has_button:
     import gpiozero
     led = gpiozero.LED(20)
     led.off()
@@ -49,12 +50,12 @@ while True:
         emo_image = cv2.imread(lastpic_file)
         image = np.concatenate((cam_image,emo_image), axis=1)    
 
-        cv2.namedWindow(win_title,cv2.WND_PROP_FULLSCREEN)
-        cv2.setWindowProperty(win_title,cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
+        cv2.namedWindow(win_title) #,cv2.WND_PROP_FULLSCREEN)
+        #cv2.setWindowProperty(win_title) #,cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
         cv2.imshow(win_title,image)
         cv2.displayOverlay(win_title, status_msg)
 
-        if sysname == 'Linux' and button.is_pressed:
+        if has_button and button.is_pressed:
             break
         k = cv2.waitKey(1)
         if k != -1:
