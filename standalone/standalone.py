@@ -1,9 +1,10 @@
 import numpy as np
 import cv2 as cv
 from deepface import DeepFace
-import platform
+import platform, shutil
 
 window_mode = 'fullscreen' # or 'debug'
+#window_mode = 'debug'
 
 has_button = 'Arm' in platform.uname().machine or 'raspi' in platform.uname().release
 
@@ -26,8 +27,14 @@ emotions = ["angry", "happy", "sad", "fear","neutral","disgust", "surprise"]
 
 refresh_delay = 30 #milliseconds between video refresh
 
-lastpic_file = '../images/lastpic.jpg'
-testpic = 'testusbimage.jpg'
+initial_lastpic_file = '../images/start_emo_image.png'
+lastpic_file = 'lastpic.png'
+shutil.copyfile( initial_lastpic_file, lastpic_file)
+
+testpic_file = 'testusbimage.jpg' #this is updated from the camera
+
+logo_file = '../images/MITEE_LogoName_640x480_DARKMODE.png' #displayed in top right
+logo_image = cv.imread(logo_file)
 
 cam = cv.VideoCapture(0)
 
@@ -38,10 +45,12 @@ status_msg = emotion
 
 q=ord('q') #key to quit
 win_title = 'Emotion Reactive Art - press the big red button to read emotion'
-cv.namedWindow(win_title) #,cv.WND_PROP_FULLSCREEN)
-if window_mode == 'fullscreen':
-    cv.setWindowProperty(win_title,cv.WND_PROP_FULLSCREEN,cv.WINDOW_FULLSCREEN)
-cv.setWindowProperty(win_title,cv.WND_PROP_AUTOSIZE,cv.WINDOW_AUTOSIZE)
+# if window_mode == 'fullscreen':
+#     cv.namedWindow(win_title,cv.WND_PROP_FULLSCREEN)
+#     cv.setWindowProperty(win_title,cv.WND_PROP_FULLSCREEN,cv.WINDOW_FULLSCREEN)
+# else:
+#     cv.namedWindow(win_title) #,cv.WND_PROP_FULLSCREEN)
+#     cv.setWindowProperty(win_title,cv.WND_PROP_AUTOSIZE,cv.WINDOW_AUTOSIZE)
 
 #run deepface on  last image to initialize model
 print("initializing....")
@@ -68,10 +77,15 @@ while True:
         emo_image = cv.imread(lastpic_file)
         #image = np.concatenate((cam_image,emo_image), axis=1)
         #print(f"cam {cam_image.shape}, emo {emo_image.shape}, art {art_image.shape}")
-        image = np.vstack((np.hstack((cam_image,emo_image,emo_image)),art_image))
+        image = np.vstack((np.hstack((cam_image,emo_image,logo_image)),art_image))
         
-        cv.namedWindow(win_title) #,cv.WND_PROP_FULLSCREEN)
-        #cv.setWindowProperty(win_title) #,cv.WND_PROP_FULLSCREEN,cv.WINDOW_FULLSCREEN)
+        #cv.namedWindow(win_title) #,cv.WND_PROP_FULLSCREEN)
+        if window_mode == 'fullscreen':
+            cv.namedWindow(win_title,cv.WND_PROP_FULLSCREEN)
+            cv.setWindowProperty(win_title,cv.WND_PROP_FULLSCREEN,cv.WINDOW_FULLSCREEN)
+        else:
+            cv.namedWindow(win_title) #,cv.WND_PROP_FULLSCREEN)
+            cv.setWindowProperty(win_title,cv.WND_PROP_AUTOSIZE,cv.WINDOW_AUTOSIZE)
         cv.imshow(win_title,image)
         cv.displayOverlay(win_title, status_msg)
 
@@ -84,14 +98,14 @@ while True:
     if k == q:
         break
     
-    cv.imwrite(testpic, cam_image)
+    cv.imwrite(testpic_file, cam_image)
     try:
         print('processing images....')
         cv.displayOverlay(win_title, 'processing images....')
-        objs = DeepFace.analyze(img_path = testpic, 
+        objs = DeepFace.analyze(img_path = testpic_file, 
             actions = ['emotion']
         )
-        print(f"analyze {testpic}:\n",objs)
+        print(f"analyze {testpic_file}:\n",objs)
         emotion = objs[0]['dominant_emotion']
         emotiondetail = sorted(objs[0]['emotion'].items(),key=lambda k: (k[1],k[0]), reverse=True)
         print("current dominant emotion is ", emotion)
